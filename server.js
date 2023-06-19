@@ -33,15 +33,15 @@ app.get('/player/:name', jsonParser, async (req, res) => {
 })
 
 app.post('/player/add', jsonParser, async (req, res) => {
-    const {name, rank} = req.body
-    const ifExists = await Player.exists({name: req.body.name})
+    const name = req.body.playerName
+    const ifExists = await Player.exists({name: req.body.playerName})
     if(ifExists){
-        res.status(400).json({error: "Player with that name already exists"})
+        res.status(400).json({error: "Player with that name already exists!"})
         return;
     }
     try {
-        const player = await Player.create({name, rank})
-        res.status(200).json(player)
+        const player = await Player.create({name})
+        res.status(200).json({message: "Player registered!"})
     } catch (error) {
         res.status(400).json({error: error.message})
     }

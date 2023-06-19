@@ -9,7 +9,7 @@ const playerSchema = new Schema({
     },
     rank: {
         type: Number,
-        required: true
+        default: 700
     },
     score: {
         wins: {
