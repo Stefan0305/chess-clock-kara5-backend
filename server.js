@@ -3,10 +3,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Player = require('./models/playerModel')
 const bodyParser = require('body-parser')
-
+const cors = require('cors');
 
 const app = express();
 const jsonParser = bodyParser.json()
+
+
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
 
 const PORT = 5000;
 const MONG_URI = 'mongodb+srv://stefan:admin@chessleaderboardkara5.7fku0su.mongodb.net/';
@@ -14,7 +19,6 @@ const MONG_URI = 'mongodb+srv://stefan:admin@chessleaderboardkara5.7fku0su.mongo
 // end points
 app.get('/leaderboard', async (req, res) => {
     const players= await Player.find({}).sort({rank: -1})
-
     res.status(200).json(players)
 })
 
@@ -22,7 +26,6 @@ app.get('/player/:name', jsonParser, async (req, res) => {
     const findBy = req.body.name
     try {
         const player = await Player.findOne({name: req.body.name})
-        console.log(player)
         res.status(200).json(player)
     } catch (error) {
         res.status(400).json({error: error.message})
@@ -30,8 +33,12 @@ app.get('/player/:name', jsonParser, async (req, res) => {
 })
 
 app.post('/player/add', jsonParser, async (req, res) => {
-    
     const {name, rank} = req.body
+    const ifExists = await Player.exists({name: req.body.name})
+    if(ifExists){
+        res.status(400).json({error: "Player with that name already exists"})
+        return;
+    }
     try {
         const player = await Player.create({name, rank})
         res.status(200).json(player)
