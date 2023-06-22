@@ -12,15 +12,19 @@ const playerSchema = new Schema({
         default: 700
     },
     score: {
-        wins: {
+        played: {
             type: Number,
             default: 0
         },
-        losses: {
+        won: {
             type: Number,
             default: 0
         },
-        draws: {
+        lost: {
+            type: Number,
+            default: 0
+        },
+        draw: {
             type: Number,
             default: 0
         }
