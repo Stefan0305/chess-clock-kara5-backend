@@ -48,7 +48,9 @@ app.post('/player/add', jsonParser, async (req, res) => {
 
 app.patch('/new-game/update-results', async (req, res) => {
     const winner = await Player.findById(req.query.winner)
+    console.log(winner)
     const loser = await Player.findById(req.query.loser)
+    console.log(loser)
 
     let rW = winner.rank;
     let rL = loser.rank;
@@ -65,27 +67,25 @@ app.patch('/new-game/update-results', async (req, res) => {
         name: winner.name,
         rank: Math.round(rW),
         score: {
-            played: winner.score.played++,
-            won: winner.score.won++,
+            played: winner.score.played + 1,
+            won: winner.score.won + 1,
             lost: winner.score.lost,
             draw: winner.score.draw
         }
      }
-    const updated1= await Player.replaceOne({_id: req.query.winner}, winnerNew, {new: true})
-    console.log(updated1)
+    const updated1= await Player.replaceOne({_id: req.query.winner}, winnerNew)
 
     const loserNew = {
         name: loser.name,
         rank: Math.round(rL),
         score: {
-            played: winner.score.played++,
-            won: winner.score.won,
-            lost: winner.score.lost++,
-            draw: winner.score.draw
+            played: loser.score.played + 1,
+            won: loser.score.won,
+            lost: loser.score.lost + 1,
+            draw: loser.score.draw
         }
      }
-    const updated2= await Player.replaceOne({_id: req.query.loser}, loserNew, {new: true})
-    console.log(updated2)
+    const updated2= await Player.replaceOne({_id: req.query.loser}, loserNew)
 
 })
 
